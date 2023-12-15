@@ -1,0 +1,14 @@
+net: "/home/nfd/myproject/mycviupaper/train_val.prototxt"
+test_iter: 291
+test_interval: 1000
+base_lr: 0.0001
+lr_policy: "step"
+gamma: 0.5
+stepsize: 30000
+display: 20
+max_iter: 450000
+momentum: 0.9
+weight_decay: 0.0005
+snapshot: 2000
+snapshot_prefix: "/home/nfd/myproject/mycviupaper/model/caffenet_train"
+solver_mode: GPU

@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!-- saved from url=(0043)http://www-personal.umich.edu/~ywchao/hico/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Video Captioning</title>
+
+</head>
+
+<body>
+
+<table border="0" width="1000px" align="center">
+<tbody><tr>
+<td>
+
+<center>
+<h1>
+<font face="helvetica" style="font-size:87%">
+    Learning Explicit Video Attributes from Mid-level Representation
+<br>
+    for Video Captioning
+</font>
+</h1>
+</center>
+
+<br>
+
+<h2><font face="helvetica" style="font-size:24px">Introduction</font></h2>
+<hr style="margin-top:-10px; margin-bottom:13px">
+<font face="helvetica" style="font-size:18px">
+<p align="justify">
+    Video captioning, i.e. the task of associating videos with a natural language description, has attracted a great amount of attention recently. Recent works on video captioning mainly focus on learning the map from low-level visual features
+    to language description directly. Though it has achieved significant progress, it has an obvious shortcoming: the high-level semantic video concepts (e.g. objects, actions in the annotated sentences) are not explicitly represented, which
+    neglects the problem of semantic gap.
+</p>
+    <p align="justify">
+    In this paper, addressing it, we propose a novel video attribute representation learning algorithm for video concept understanding and utilize the learned explicit video attribute representation to improve video captioning performance.
+    </p>
+    To achieve it, firstly, inspired by the success of spectrogram in audio processing, a novel mid-level video representation named "video response map" (VRM) is proposed, by which the frame sequence could be represented by a single
+    image representation. Therefore, the complicated high-level video attributes representation learning problem could be converted to a well-studied multi-label image classification problem. Then in the captions prediction step,
+    the learned high-level video attributes feature is integrated with the single frame feature into a previous sequence-to-sequence language generation model by adjusting the LSTM (Long-Short Term Memory) input units. The proposed video
+    captioning framework could both handle variable frame inputs and utilize high-level semantic video attribute features.
+    <p align="justify">
+    Experimental results on video captioning tasks show that the proposed method, utilizing only RGB frames as input with no extra video or text training data, could achieve competitive performance with state-of-the-art methods.
+    Furthermore, the extensive experimental evaluations on the UCF-101 action classification benchmark well demonstrate the representation capability of the proposed VRM.
+</p>
+
+
+</font>
+
+<p style="padding-bottom:1px"></p>
+
+
+<h2><font face="helvetica" style="font-size:24px">Motivation</font></h2>
+<hr style="margin-top:-10px; margin-bottom:13px">
+<font face="helvetica" style="font-size:15px">
+
+<h3>1. Video attributes:</h3>
+    <font face="helvetica" style="font-size:15px">
+        <center>
+            <img src="./videorepresentation/videoattribute.png" height="300">
+            <br>Illustrate the video attributes (from Youtube2Text [1] dataset)..
+        </center>
+    </font>
+
+    <p style="padding-bottom: 10px" align="justify">
+        A video is associated with many sentences which are annotated by humans. These sentences include object names (nouns), motions (verbs) or properties (adjectives) which we consider them as explicit highlevel video attributes.
+        The proposed method obtains semantic video representation by learning from attributes, while previous works do not.
+    </p>
+
+
+
+<h3>2. Video response map:</h3>
+    <!--
+    <p style="padding-bottom: 10px" align="justify">
+The input is an image and the output is a set of bounding box pairs, each localizes a human plus an object and predicts an HOI class label.
+</p>
+    -->
+
+    <font face="helvetica" style="font-size:15px">
+<center>
+    <img src="./videorepresentation/vrm.png" height="300">
+    <br>The comparison of audio spectrogram and the proposed video response map generation (sketch map).
+</center>
+</font>
+    <p style="padding-bottom: 10px" align="justify">
+        Our video response map idea is inspired by the audio spectrogram method. Firstly, we use the CNN to extract each frame’s feature while FFT is used in audio processing. Secondly, we stitch all the CNN outputs to a video response
+        map while MFCC is utilized in audio processing.
+    </p>
+
+
+<p style="padding-bottom:1px"></p>
+
+
+<h2><font face="helvetica" style="font-size:24px">Framework</font></h2>
+<hr style="margin-top:-10px; margin-bottom:13px">
+<font face="helvetica" style="font-size:15px">
+    <center>
+    <img src="./videorepresentation/framework.png" height="300">
+        <br>
+        The proposed video captioning framework.
+        </center>
+</font>
+
+    <p style="padding-bottom: 10px" align="justify">
+        It contains video analysis module and sentence generation module.
+    </p>
+        <p>
+        In video analysis module, besides the traditional sampled frames feature, we present a novel mid-level video representation method to represent a sequence of frames into a single image (video response map) and utilize it to
+        extract video attribute features.
+        </p>
+    <p>
+        The sentence generation module learns a mapping from the attribute feature and sampled frames feature (these two features are processed by linear projection) to a sequence of words using an LSTM based framework.
+    </p>
+
+<p style="padding-bottom:1px"></p>
+
+<h2><font face="helvetica" style="font-size:24px">Source Code</font></h2>
+<hr style="margin-top:-10px; margin-bottom:13px">
+<font face="helvetica" style="font-size:15px">
+
+<div>
+<img src="./videorepresentation/GitHub-Mark-64px.png" height="30px">
+<div style="margin-left: 10px; display: inline-block;"> 
+<a href="./videorepresentation/code/convert_float_data.cpp">convert_float_data.cpp</a>
+    <br>
+Source code for constructing video response map (VRM). From frame features to LMDB format.
+</div>
+</div>
+
+<br>
+
+    <div>
+        <img src="./videorepresentation/GitHub-Mark-64px.png" height="30px">
+        <div style="margin-left: 10px; display: inline-block;">
+            <a href="./videorepresentation/code/caffe-multilabel.zip">caffe-multilabel.zip</a> &nbsp;&nbsp;
+            <br>
+            caffe-multilabel.zip: Modify the Caffe code to make it support deep multi-label classification which only need one LMDB file.
+            <br>(<b>For video attributes representation learning.</b>)
+        </div>
+    </div>
+
+    <br>
+
+    <div>
+        <img src="./videorepresentation/GitHub-Mark-64px.png" height="30px">
+        <div style="margin-left: 10px; display: inline-block;">
+            <a href="./MultimodalKnowledge/code/solver.prototxt">solver.prototxt</a>
+            &nbsp;&nbsp; <a href="./videorepresentation/code/train_val.prototxt">train_val.prototxt</a>
+            <br>
+            solver.prototxt & train_val.prototxt : parameters for video action classification (UCF101 dataset) which utilize the proposed VRM as input.
+        </div>
+    </div>
+
+</font>
+
+<p style="padding-bottom:1px"></p>
+
+
+<h2><font face="helvetica" style="font-size:24px">Results</font></h2>
+<hr style="margin-top:-10px; margin-bottom:-5px">
+    <br>
+    <div>
+        <a href="./videorepresentation/msvttresults.zip" style="text-decoration: none;">
+            <img src="./videorepresentation/download_button.jpg" height="30px">
+        </a>
+        <div style="margin-left: 10px; display: inline-block;">
+            <a href="./videorepresentation/msvttresults.zip">Video captioning results</a>
+            <br>
+            All sentences (generated by the proposed method) on the MS-VTT test set.
+        </div>
+    </div>
+
+    <br>
+    <div>
+        <a href="http://ms-multimedia-challenge.com/challenge" style="text-decoration: none;">
+            <img src="./videorepresentation/download_button.jpg" height="30px">
+        </a>
+        <div style="margin-left: 10px; display: inline-block;">
+            <a href="http://ms-multimedia-challenge.com/challenge">MS-VTT challenge</a> <br>
+            We participate MS-VTT challenge based on the presented solution.
+        </div>
+    </div>
+
+    <br>
+    <div>
+        <a href="./videorepresentation/code/mylog.log" style="text-decoration: none;">
+            <img src="./videorepresentation/download_button.jpg" height="30px">
+        </a>
+        <div style="margin-left: 10px; display: inline-block;">
+            <a href="./videorepresentation/code/mylog.log">Training Log Files</a>
+            <br>
+            Training log on UCF-101 dataset (Using the proposed mid-level video representation VRM as input).
+        </div>
+    </div>
+<p style="padding-bottom:1px"></p>
+
+<hr>
+<font face="helvetica" style="font-size:15px">Last updated on 2017/03/05</font>
+</td>
+</tr>
+
+
+
+</tbody></table></body></html>
