@@ -1,4 +1,4 @@
-// This program converts a set of images to a lmdb/leveldb by storing them
+﻿// This program converts a set of images to a lmdb/leveldb by storing them
 // as Datum proto buffers.
 // Usage:
 //   convert_imageset [FLAGS] ROOTFOLDER/ LISTFILE DB_NAME
